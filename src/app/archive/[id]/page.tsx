@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 
 import Feature from "@/components/Feature";
-import { getOrCreateWeeklyFeature } from "@/db/features";
+import { getRecipe } from "@/db/features";
 
-export default async function Home() {
-  const data = await getOrCreateWeeklyFeature();
+export default async function Page({ params }: { params: { id: string } }) {
+  const { id } = await params;
+  const data = await getRecipe(id);
 
   if (!data) {
     return notFound();

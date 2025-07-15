@@ -1,8 +1,10 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-fg-default: var(--foreground);
 }
 
 @theme inline {
@@ -12,15 +14,39 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  height: 100%;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+button, label, a {
+  @apply cursor-pointer;
+}
+
+.button {
+  @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors;
+  @apply px-6 py-2 flex gap-2;
+}
+
+.label {
+  @apply text-slate-600;
+}
+
+.wmde-markdown h2 {
+    @apply !border-b-0;
+}
+
+.prose a {
+  @apply relative;
+  @apply before:content-[""] before:absolute before:-top-0.5 before:-left-1 before:-bottom-0.5 before:right-full opacity-100;
+  @apply hover:before:-right-0.5 hover:before:bg-lime-400 hover:before:z-[-1] before:transition-all opacity-100;
+}
+
+.tiktok-embed {
+  @apply !mt-0;
 }

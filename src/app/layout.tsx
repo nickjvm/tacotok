@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Countdown from "@/components/Countdown";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +30,40 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-col min-h-full">
+          <Header />
+          <Countdown />
+          <div className="grow md:pt-4 lg:pt-8 pb-16 flex flex-col">
+            {children}
+          </div>
+          <div className="px-4 py-2 border-t border-gray-200 text-center bg-gray-50 text-xs">
+            <div className="flex justify-between max-w-5xl mx-auto">
+              <span>
+                Made with ❤️ by{" "}
+                <Link
+                  className="hover:underline focus:underline"
+                  href="http://github.com/nickjvm/taco-party"
+                >
+                  @nickjvm
+                </Link>
+              </span>
+              <div className="flex items-center justify-between gap-4">
+                <Link
+                  href="/support"
+                  className="opacity-50 hover:underline focus:underline focus:opacity-100 hover:opacity-100"
+                >
+                  Suggest a video
+                </Link>
+                <Link
+                  href="/support?type=takedown"
+                  className="opacity-50 hover:underline focus:underline focus:opacity-100 hover:opacity-100"
+                >
+                  Request takedown
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </body>
     </html>
   );
