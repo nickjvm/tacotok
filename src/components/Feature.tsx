@@ -5,6 +5,7 @@ import EmbeddedPost from "./EmbeddedPost";
 import MDEditor from "@uiw/react-md-editor";
 import cn from "@/utils/cn";
 import { FaTiktok } from "react-icons/fa";
+import RecipeSchema from "./RecipeSchema";
 
 type Props = {
   recipe: Recipe;
@@ -20,6 +21,7 @@ export default function Feature({ recipe, featuredAt }: Props) {
 
   return (
     <div className="grid grid-cols-16 max-w-5xl mx-auto gap-6 p-4">
+      <RecipeSchema recipe={recipe} />
       <div className="col-span-16 lg:col-span-6 lg:order-1 order-2">
         <div className="lg:sticky top-20 pt-12 lg:pt-0" id="video">
           <EmbeddedPost url={recipe.embedUrl} />

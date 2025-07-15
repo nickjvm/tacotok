@@ -67,9 +67,9 @@ export async function createGitHubIssue(
     }
   );
 
-  const data = await response.json();
+  const data = (await response.json()) as GithubIssueResponse;
   if (!response.ok) {
-    throw new Error(`GitHub error: ${data.message}`);
+    throw new Error(`Error creating GitHub issue. Status: ${response.status}`);
   }
 
   return data;

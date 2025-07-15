@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import EmbeddedPost from "./EmbeddedPost";
 import cn from "@/utils/cn";
 import { IoSparkles } from "react-icons/io5";
+import { useNotification } from "@/providers/Notifications";
 
 type Props = {
   recipe: Partial<Recipe>;
@@ -24,6 +25,7 @@ type Props = {
 
 export default function EditPost({ recipe: _recipe }: Props) {
   const router = useRouter();
+  const { addNotification } = useNotification();
   const [recipe, submitAction, isPending] = useActionState(
     async (
       state: Partial<Recipe> | null,
@@ -42,10 +44,22 @@ export default function EditPost({ recipe: _recipe }: Props) {
       };
 
       if (recipe?.uuid) {
-        return await updatePost({ ...recipe, ...data } as Recipe);
+        const updatedRecipe = await updatePost({
+          ...recipe,
+          ...data,
+        } as Recipe);
+        addNotification({
+          message: `Recipe ${updatedRecipe.title} updated.`,
+          type: "success",
+        });
+        return updatedRecipe;
       }
 
       const newRecipe = await createPost(data);
+      addNotification({
+        message: `Recipe ${newRecipe.title} created.`,
+        type: "success",
+      });
       router.push(`/admin/edit/${newRecipe.uuid}`);
       return null;
     },

@@ -3,6 +3,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createGitHubIssue, GithubIssueResponse } from "@/app/actions/github";
 import cn from "@/utils/cn";
+import { useNotification } from "@/providers/Notifications";
 
 type State = {
   error?: string;
@@ -18,6 +19,7 @@ export default function Page() {
   const isTakedown = searchParams.get("type") === "takedown";
   const [formState, setFormState] = useState<State>(null);
 
+  const { addNotification } = useNotification();
   const [state, submitAction, isPending] = useActionState(
     async (prevState: State, formData: FormData) => {
       let title;
@@ -53,6 +55,10 @@ export default function Page() {
       }
 
       const result = await createGitHubIssue(title, body);
+      addNotification({
+        message: `Your request has been received.`,
+        type: "info",
+      });
       return {
         success: true,
         result,
@@ -115,7 +121,7 @@ export default function Page() {
         <button
           type="submit"
           disabled={isPending}
-          className="border border-lime-500 hover:border-lime-600 bg-lime-500 hover:bg-lime-600 text-white px-4 py-2 rounded transition-colors"
+          className="border border-lime-400 hover:border-lime-400 bg-lime-400 hover:bg-lime-300 text-black px-4 py-2 rounded transition-colors"
         >
           {isPending ? "Submitting..." : "Submit"}
         </button>

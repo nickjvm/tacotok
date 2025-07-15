@@ -1,0 +1,53 @@
+import Script from "next/script";
+
+function extractIngredients(ingredients: string) {
+  return ingredients
+    .split("\n")
+    .filter((ingredient) => ingredient.startsWith("-"))
+    .map((ingredient) => ingredient.trim().replace("- ", ""));
+}
+
+function extractInstructions(instructions: string) {
+  return {
+    "@type": "HowToSection",
+    name: "Instructions",
+    itemListElement: instructions
+      .split("\n")
+      .filter((instruction) => instruction.match(/^\d+\. /))
+      .map((instruction) => ({
+        "@type": "HowToStep",
+        text: instruction.trim().replace(/^\d+\. /, ""),
+      })),
+  };
+}
+
+export default function RecipeSchema({ recipe }: { recipe: Recipe }) {
+  if (!recipe) {
+    return null;
+  }
+
+  return (
+    <Script
+      id="schema"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Recipe",
+          name: recipe.title,
+          video: recipe.embedUrl,
+          description: recipe.intro,
+          image: recipe.imageUrl,
+          recipeCategory: "Dinner",
+          recipeCuisine: "Mexican",
+          author: {
+            "@type": "Person",
+            name: recipe.author,
+          },
+          recipeIngredient: extractIngredients(recipe.ingredients),
+          recipeInstructions: extractInstructions(recipe.instructions),
+        }),
+      }}
+    />
+  );
+}

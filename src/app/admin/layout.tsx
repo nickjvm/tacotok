@@ -9,5 +9,5 @@ export default function AdminLayout({
     return notFound();
   }
 
-  return <div className="w-5xl mx-auto">{children}</div>;
+  return <>{children}</>;
 }
