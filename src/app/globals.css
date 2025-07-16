@@ -12,6 +12,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --animate-slidedown: slide-down 1s ease-in;
+  @keyframes slide-down {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
 }
 
 

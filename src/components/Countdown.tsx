@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+type HoursMinutesSeconds = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
 export default function Countdown() {
-  const getCountdown = () => {
+  const getCountdown = (): HoursMinutesSeconds => {
     const today = new Date();
     const day = today.getDay();
     const diff = 2 - day;
@@ -27,7 +34,7 @@ export default function Countdown() {
     };
   };
 
-  const [countdown, setCountdown] = useState(getCountdown());
+  const [countdown, setCountdown] = useState<HoursMinutesSeconds | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -38,14 +45,14 @@ export default function Countdown() {
     }
   }, []);
 
-  if (countdown.days) {
+  if (!countdown) {
     return null;
   }
 
   return (
-    <div className="text-center bg-lime-400 p-2">
+    <div className="text-center bg-lime-400 p-2 animate-slidedown ">
       <h1>Taco Tuesday ends in...</h1>
-      <p className="text-xl font-bold" suppressHydrationWarning={true}>
+      <p className="text-xl font-bold">
         {countdown.hours.toString().padStart(2, "0")}:
         {countdown.minutes.toString().padStart(2, "0")}:
         {countdown.seconds.toString().padStart(2, "0")}

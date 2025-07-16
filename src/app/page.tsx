@@ -1,13 +1,16 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getOrCreateWeeklyFeature } from "@/actions/features";
+import {
+  getCurrentFeaturedRecipe,
+  getOrCreateWeeklyFeature,
+} from "@/actions/features";
 import { getFeaturedRecipeMetadata } from "@/actions/metadata";
 
 import Feature from "@/components/Feature";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getOrCreateWeeklyFeature();
+  const data = await getCurrentFeaturedRecipe();
 
   return await getFeaturedRecipeMetadata(data?.recipe);
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { formatDbDate, subtractFromDbDate } from "@/utils/date";
 
 type Props = {
   recipe: Recipe;
@@ -26,12 +27,10 @@ export default function Card({ recipe, href, featuredAt }: Props) {
         <p className="leading-tight line-clamp-2">{recipe.title}</p>
         {featuredAt && (
           <p className="text-xs text-gray-500">
-            {new Intl.DateTimeFormat("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(new Date(featuredAt - 60 * 60 * 24 * 1000))}
+            {formatDbDate(
+              subtractFromDbDate(featuredAt, 1),
+              "EEEE, MMMM dd, yyyy"
+            )}
           </p>
         )}
         <p className="text-xs text-gray-500">

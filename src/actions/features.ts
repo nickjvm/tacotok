@@ -1,29 +1,21 @@
-import { eq, gt, gte, isNull, and, sql, lte, isNotNull } from "drizzle-orm";
+import { eq, isNull, sql, lte } from "drizzle-orm";
 
 import db from "@/db";
 import { features, recipes } from "@/db/schema";
 
+const yyyymmdd = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return parseInt(`${year}${month}${day}`, 10);
+};
+
 export async function getOrCreateWeeklyFeature() {
   const nextWednesday = getNextWednesday();
-  const lastWednesday = nextWednesday.getTime() - 7 * 24 * 60 * 60 * 1000;
-  // Check if we already have a feature for this Wednesday
-  const existingFeature = await db
-    .select({
-      recipe: recipes,
-      featuredAt: features.featuredAt,
-    })
-    .from(features)
-    .where(
-      and(
-        isNotNull(features.featuredAt),
-        gt(features.featuredAt, lastWednesday),
-        lte(features.featuredAt, nextWednesday.getTime())
-      )
-    )
-    .innerJoin(recipes, eq(recipes.id, features.recipe))
-    .get();
 
-  if (existingFeature?.recipe) {
+  const existingFeature = await getCurrentFeaturedRecipe();
+
+  if (existingFeature?.featuredAt) {
     return existingFeature;
   }
 
@@ -46,17 +38,23 @@ export async function getOrCreateWeeklyFeature() {
       })
       .from(recipes)
       .leftJoin(features, eq(recipes.id, features.recipe))
-      .where(lte(features.featuredAt, Date.now() - 60 * 60 * 24 * 180))
+      .where(
+        lte(
+          features.featuredAt,
+          yyyymmdd(new Date(Date.now() - 60 * 60 * 24 * 180))
+        )
+      )
       .orderBy(sql`RANDOM()`)
       .get();
   }
+
   if (unfeaturedRecipe) {
     // Create the feature
     const { featuredAt } = await db
       .insert(features)
       .values({
         recipe: unfeaturedRecipe.recipe.id,
-        featuredAt: nextWednesday.getTime(),
+        featuredAt: yyyymmdd(nextWednesday),
       })
       .returning()
       .get();
@@ -72,25 +70,12 @@ export async function getOrCreateWeeklyFeature() {
 
 function getNextWednesday(): Date {
   const date = new Date();
-
-  // Set to next Wednesday at 12:00 AM
-  date.setDate(date.getDate() + ((3 - date.getDay() + 7) % 7 || 7));
-  date.setHours(0, 0, 0, 0);
-
-  // If today is Wednesday and it's before 12:00 AM, use today
-  const today = new Date();
-  if (date < today) {
-    date.setDate(date.getDate() + 7);
-  }
-
+  date.setDate(date.getDate() + ((3 + 7 - date.getDay()) % 7 || 7));
   return date;
 }
 
 // Helper function to get the current featured recipe
 export async function getCurrentFeaturedRecipe() {
-  const now = Date.now();
-  const oneWeekAgo = now - 7 * 24 * 60 * 60 * 1000;
-
   const data = await db
     .select({
       recipe: recipes,
@@ -98,16 +83,13 @@ export async function getCurrentFeaturedRecipe() {
     })
     .from(features)
     .innerJoin(recipes, eq(recipes.id, features.recipe))
-    .where(
-      and(isNotNull(features.featuredAt), gte(features.featuredAt, oneWeekAgo))
-    )
+    .where(eq(features.featuredAt, yyyymmdd(getNextWednesday())))
     .get();
 
-  if (!data || !data.recipe) {
+  if (!data) {
     return null;
   }
 
-  console.log(data.featuredAt, oneWeekAgo);
   return data;
 }
 

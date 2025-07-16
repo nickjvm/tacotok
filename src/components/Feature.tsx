@@ -7,6 +7,7 @@ import cn from "@/utils/cn";
 
 import EmbeddedPost from "@/components/EmbeddedPost";
 import RecipeSchema from "@/components/RecipeSchema";
+import { formatDbDate, subtractFromDbDate } from "@/utils/date";
 
 type Props = {
   recipe: Recipe;
@@ -40,12 +41,10 @@ export default function Feature({ recipe, featuredAt }: Props) {
         </Link>
         {featuredAt && (
           <p className="text-sm text-gray-500">
-            {new Intl.DateTimeFormat("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(new Date(featuredAt - 60 * 60 * 24 * 1000))}
+            {formatDbDate(
+              subtractFromDbDate(featuredAt, 1),
+              "EEEE, MMMM dd, yyyy"
+            )}
           </p>
         )}
         <div className="w-full max-w-full">
