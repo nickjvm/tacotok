@@ -7,17 +7,18 @@ import {
   useMemo,
   useRef,
 } from "react";
-import TextInput from "./TextInput";
-import Textarea from "./Textarea";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-
-import { createPost, updatePost } from "@/app/actions/post";
-import { parseEmbedSource } from "@/app/actions/parseEmbedSource";
-import { useRouter } from "next/navigation";
-import EmbeddedPost from "./EmbeddedPost";
-import cn from "@/utils/cn";
 import { IoSparkles } from "react-icons/io5";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+
+import { createPost, updatePost } from "@/actions/post";
+import { parseEmbedSource } from "@/actions/parseEmbedSource";
 import { useNotification } from "@/providers/Notifications";
+import cn from "@/utils/cn";
+
+import TextInput from "@/components/TextInput";
+import Textarea from "@/components/Textarea";
+import EmbeddedPost from "@/components/EmbeddedPost";
 
 type Props = {
   recipe: Partial<Recipe>;

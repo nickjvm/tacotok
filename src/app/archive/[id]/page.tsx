@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getFeaturedRecipeMetadata } from "@/app/actions/metadata";
+import { getFeaturedRecipeMetadata } from "@/actions/metadata";
 import Feature from "@/components/Feature";
-import { getRecipe } from "@/db/features";
+import { getRecipe } from "@/actions/features";
 
 export async function generateMetadata({
   params,

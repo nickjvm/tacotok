@@ -1,7 +1,7 @@
 "use client";
 import { useActionState, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { createGitHubIssue, GithubIssueResponse } from "@/app/actions/github";
+import { createGitHubIssue, GithubIssueResponse } from "@/actions/github";
 import cn from "@/utils/cn";
 import { useNotification } from "@/providers/Notifications";
 

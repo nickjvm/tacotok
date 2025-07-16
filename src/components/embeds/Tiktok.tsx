@@ -1,8 +1,9 @@
 "use client";
 
-import Script from "next/script";
 import { useEffect, useTransition, useRef, useState } from "react";
-import LoadingEmbed from "./LoadingEmbed";
+import Script from "next/script";
+
+import LoadingEmbed from "@/components/embeds/LoadingEmbed";
 
 export default function TiktokEmbed({ url }: { url: string }) {
   const [html, setHtml] = useState<string | null>(null);

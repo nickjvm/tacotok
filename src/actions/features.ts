@@ -1,7 +1,7 @@
 import { eq, gt, gte, isNull, and, sql, lte, isNotNull } from "drizzle-orm";
 
-import db from "./index";
-import { features_new, recipes_new } from "./schema";
+import db from "@/db";
+import { features_new, recipes_new } from "@/db/schema";
 
 export async function getOrCreateWeeklyFeature() {
   const nextWednesday = getNextWednesday();

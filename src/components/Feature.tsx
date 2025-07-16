@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import EmbeddedPost from "./EmbeddedPost";
+import { FaTiktok } from "react-icons/fa";
 import MDEditor from "@uiw/react-md-editor";
 import cn from "@/utils/cn";
-import { FaTiktok } from "react-icons/fa";
-import RecipeSchema from "./RecipeSchema";
+
+import EmbeddedPost from "@/components/EmbeddedPost";
+import RecipeSchema from "@/components/RecipeSchema";
 
 type Props = {
   recipe: Recipe;

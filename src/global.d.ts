@@ -1,5 +1,5 @@
 import { InferSelectModel } from "drizzle-orm";
-import { recipes_new } from "./db/schema";
+import { recipes_new } from "@/db/schema";
 
 declare global {
   type Recipe = InferSelectModel<typeof recipes_new>;

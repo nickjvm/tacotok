@@ -1,8 +1,8 @@
-import TiktokEmbed from "./embeds/Tiktok";
-import InstagramEmbed from "./embeds/Instagram";
-
-import LoadingEmbed from "./embeds/LoadingEmbed";
 import { useMemo } from "react";
+
+import TiktokEmbed from "@/components/embeds/Tiktok";
+import InstagramEmbed from "@/components/embeds/Instagram";
+import LoadingEmbed from "@/components/embeds/LoadingEmbed";
 
 type Props = {
   url?: string;
