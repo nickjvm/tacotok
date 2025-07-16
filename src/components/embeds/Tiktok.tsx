@@ -10,17 +10,25 @@ export default function TiktokEmbed({ url }: { url: string }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const pollForScript = () => {
+    const interval = setInterval(() => {
+      if (window.tiktokEmbed?.lib?.render && ref.current) {
+        window.tiktokEmbed.lib.render([
+          ref.current.querySelector("blockquote") as HTMLElement,
+        ]);
+        clearInterval(interval);
+      }
+    }, 100);
+    setTimeout(() => clearInterval(interval), 5000);
+  };
+
   useEffect(() => {
     startTransition(() => {
       fetch(`https://www.tiktok.com/oembed?url=${url}?lang=en`)
         .then((r) => r.json())
         .then((oEmbed) => {
           setHtml(oEmbed.html);
-          if (window.tiktokEmbed?.lib?.render && ref.current) {
-            window.tiktokEmbed.lib.render([
-              ref.current.querySelector("blockquote") as HTMLElement,
-            ]);
-          }
+          pollForScript();
         });
     });
   }, [url]);
@@ -40,7 +48,7 @@ export default function TiktokEmbed({ url }: { url: string }) {
         ref={ref}
         dangerouslySetInnerHTML={{ __html: html }}
       />
-      <Script async src="https://www.tiktok.com/embed.js" />
+      <Script src="https://www.tiktok.com/embed.js" />
     </>
   );
 }
