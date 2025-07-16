@@ -1,45 +1,45 @@
-# Stage 1: Build
+# Use Node.js 20 Alpine as the build image
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Set node environment
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-# Install dependencies (including dev dependencies)
+# Copy package files and install dependencies
 COPY package.json package-lock.json* ./
-RUN npm ci --include=dev
+RUN npm ci
 
 # Copy the rest of the application source code
 COPY . .
 
+# Set environment variables for build-time and runtime configuration
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+ARG TURSO_DATABASE_URL
+ENV TURSO_DATABASE_URL=${TURSO_DATABASE_URL}
+
+ARG TURSO_AUTH_TOKEN
+ENV TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
+
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+
+ARG NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+
 # Build the application
 RUN npm run build
 
-# Stage 2: Production
-FROM node:20-alpine
+# Use a fresh Node.js 20 Alpine image for running the app
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+# Copy built files and dependencies from the builder stage
+COPY --from=builder ./app ./
 
-# Copy built files and production dependencies
-COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/package-lock.json ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Install only production dependencies
-RUN npm ci --omit=dev
-
-# Switch to non-root user
-USER nextjs
-
-# Environment variables (set these in Railway's dashboard)
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
+# Expose the application port
 EXPOSE 3000
 
-# Use node directly instead of npm for better signal handling
-CMD ["node", "server.js"]
+# Start the application using npm start
+CMD ["npm", "run", "start"]
