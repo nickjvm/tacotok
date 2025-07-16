@@ -1,3 +1,5 @@
+export const revalidate = 60 * 15;
+
 import db from "@/db";
 import { features, recipes } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";

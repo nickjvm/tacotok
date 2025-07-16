@@ -1,5 +1,5 @@
 import { eq, isNull, sql, lte } from "drizzle-orm";
-import { unstable_cache as cache, revalidateTag } from "next/cache";
+
 import db from "@/db";
 import { features, recipes } from "@/db/schema";
 
@@ -10,71 +10,63 @@ const yyyymmdd = (date: Date) => {
   return parseInt(`${year}${month}${day}`, 10);
 };
 
-export const getOrCreateWeeklyFeature = cache(
-  async () => {
-    const nextWednesday = getNextWednesday();
+export async function getOrCreateWeeklyFeature() {
+  const nextWednesday = getNextWednesday();
 
-    const existingFeature = await getCurrentFeaturedRecipe();
+  const existingFeature = await getCurrentFeaturedRecipe();
 
-    if (existingFeature?.featuredAt) {
-      return existingFeature;
-    }
+  if (existingFeature?.featuredAt) {
+    return existingFeature;
+  }
 
-    // First try to get a random that has never been featured.
-    let unfeaturedRecipe = await db
+  // First try to get a random that has never been featured.
+  let unfeaturedRecipe = await db
+    .select({
+      recipe: recipes,
+    })
+    .from(recipes)
+    .leftJoin(features, eq(recipes.id, features.recipe))
+    .where(isNull(features.featuredAt))
+    .orderBy(sql`RANDOM()`)
+    .get();
+
+  if (!unfeaturedRecipe) {
+    // get a random recipe that has been featured but is stale (older than 6 months)
+    unfeaturedRecipe = await db
       .select({
         recipe: recipes,
       })
       .from(recipes)
       .leftJoin(features, eq(recipes.id, features.recipe))
-      .where(isNull(features.featuredAt))
+      .where(
+        lte(
+          features.featuredAt,
+          yyyymmdd(new Date(Date.now() - 60 * 60 * 24 * 180))
+        )
+      )
       .orderBy(sql`RANDOM()`)
       .get();
-
-    if (!unfeaturedRecipe) {
-      // get a random recipe that has been featured but is stale (older than 6 months)
-      unfeaturedRecipe = await db
-        .select({
-          recipe: recipes,
-        })
-        .from(recipes)
-        .leftJoin(features, eq(recipes.id, features.recipe))
-        .where(
-          lte(
-            features.featuredAt,
-            yyyymmdd(new Date(Date.now() - 60 * 60 * 24 * 180))
-          )
-        )
-        .orderBy(sql`RANDOM()`)
-        .get();
-    }
-
-    if (unfeaturedRecipe) {
-      // Create the feature
-      const { featuredAt } = await db
-        .insert(features)
-        .values({
-          recipe: unfeaturedRecipe.recipe.id,
-          featuredAt: yyyymmdd(nextWednesday),
-        })
-        .returning()
-        .get();
-
-      revalidateTag("featured-recipe");
-      return {
-        recipe: unfeaturedRecipe.recipe,
-        featuredAt,
-      };
-    }
-
-    return null;
-  },
-  ["current-featured-recipe"],
-  {
-    tags: ["featured-recipe"],
-    revalidate: 3600,
   }
-);
+
+  if (unfeaturedRecipe) {
+    // Create the feature
+    const { featuredAt } = await db
+      .insert(features)
+      .values({
+        recipe: unfeaturedRecipe.recipe.id,
+        featuredAt: yyyymmdd(nextWednesday),
+      })
+      .returning()
+      .get();
+
+    return {
+      recipe: unfeaturedRecipe.recipe,
+      featuredAt,
+    };
+  }
+
+  return null;
+}
 
 function getNextWednesday(): Date {
   const date = new Date();
