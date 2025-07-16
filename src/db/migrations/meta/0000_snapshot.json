@@ -4,73 +4,27 @@
   "version": "6",
   "dialect": "sqlite",
   "tables": {
-    "embeds": {
-      "name": "embeds",
+    "features": {
+      "name": "features",
       "columns": {
         "id": {
-          "autoincrement": false,
+          "autoincrement": true,
           "name": "id",
           "type": "integer",
           "primaryKey": true,
           "notNull": false
         },
-        "url": {
+        "recipe": {
           "autoincrement": false,
-          "name": "url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "author": {
-          "autoincrement": false,
-          "name": "author",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "compositePrimaryKeys": {},
-      "indexes": {},
-      "foreignKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "recipes": {
-      "name": "recipes",
-      "columns": {
-        "id": {
-          "autoincrement": false,
-          "name": "id",
+          "name": "recipe",
           "type": "integer",
-          "primaryKey": true,
-          "notNull": false
-        },
-        "text": {
-          "autoincrement": false,
-          "name": "text",
-          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "source": {
+        "featuredAt": {
           "autoincrement": false,
-          "name": "source",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "post": {
-          "autoincrement": false,
-          "name": "post",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "title": {
-          "default": "''",
-          "autoincrement": false,
-          "name": "title",
-          "type": "text",
+          "name": "featuredAt",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         }
@@ -78,20 +32,125 @@
       "compositePrimaryKeys": {},
       "indexes": {},
       "foreignKeys": {
-        "recipes_post_embeds_id_fk": {
-          "name": "recipes_post_embeds_id_fk",
-          "tableFrom": "recipes",
-          "tableTo": "embeds",
+        "features_recipe_recipes_id_fk": {
+          "name": "features_recipe_recipes_id_fk",
+          "tableFrom": "features",
+          "tableTo": "recipes",
           "columnsFrom": [
-            "post"
+            "recipe"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "recipes": {
+      "name": "recipes",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": false
+        },
+        "uuid": {
+          "autoincrement": false,
+          "name": "uuid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embed_url": {
+          "autoincrement": false,
+          "name": "embed_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author": {
+          "autoincrement": false,
+          "name": "author",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "website": {
+          "default": "''",
+          "autoincrement": false,
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "intro": {
+          "autoincrement": false,
+          "name": "intro",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ingredients": {
+          "autoincrement": false,
+          "name": "ingredients",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instructions": {
+          "autoincrement": false,
+          "name": "instructions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hidden": {
+          "default": false,
+          "autoincrement": false,
+          "name": "hidden",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "default": "''",
+          "autoincrement": false,
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
     }

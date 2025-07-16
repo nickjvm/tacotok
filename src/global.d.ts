@@ -1,8 +1,8 @@
 import { InferSelectModel } from "drizzle-orm";
-import { recipes_new } from "@/db/schema";
+import { recipes } from "@/db/schema";
 
 declare global {
-  type Recipe = InferSelectModel<typeof recipes_new>;
+  type Recipe = InferSelectModel<typeof recipes>;
 
   interface Window {
     instgrm?: {

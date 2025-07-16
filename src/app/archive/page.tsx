@@ -1,17 +1,17 @@
 import db from "@/db";
-import { features_new, recipes_new } from "@/db/schema";
+import { features, recipes } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import Card from "@/components/Card";
 
 export default async function Page() {
   const data = await db
     .select({
-      recipe: recipes_new,
-      featuredAt: features_new.featuredAt,
+      recipe: recipes,
+      featuredAt: features.featuredAt,
     })
-    .from(features_new)
-    .innerJoin(recipes_new, eq(recipes_new.id, features_new.recipe))
-    .orderBy(desc(features_new.featuredAt));
+    .from(features)
+    .innerJoin(recipes, eq(recipes.id, features.recipe))
+    .orderBy(desc(features.featuredAt));
 
   return (
     <div>

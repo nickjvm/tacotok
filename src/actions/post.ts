@@ -1,14 +1,14 @@
 "use server";
 
 import db from "@/db";
-import { recipes_new } from "@/db/schema";
+import { recipes } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function createPost(
   data: Omit<Recipe, "id" | "uuid" | "createdAt" | "updatedAt">
 ): Promise<Recipe> {
   return await db
-    .insert(recipes_new)
+    .insert(recipes)
     .values({
       uuid: crypto.randomUUID(),
       title: data.title,
@@ -28,7 +28,7 @@ export async function createPost(
 
 export async function updatePost(data: Recipe): Promise<Recipe> {
   return await db
-    .update(recipes_new)
+    .update(recipes)
     .set({
       title: data.title,
       intro: data.intro,
@@ -41,7 +41,7 @@ export async function updatePost(data: Recipe): Promise<Recipe> {
       hidden: data.hidden,
       updatedAt: Date.now(),
     })
-    .where(eq(recipes_new.uuid, data.uuid))
+    .where(eq(recipes.uuid, data.uuid))
     .returning()
     .get();
 }

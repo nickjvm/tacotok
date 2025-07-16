@@ -1,7 +1,7 @@
 import { eq, gt, gte, isNull, and, sql, lte, isNotNull } from "drizzle-orm";
 
 import db from "@/db";
-import { features_new, recipes_new } from "@/db/schema";
+import { features, recipes } from "@/db/schema";
 
 export async function getOrCreateWeeklyFeature() {
   const nextWednesday = getNextWednesday();
@@ -9,18 +9,18 @@ export async function getOrCreateWeeklyFeature() {
   // Check if we already have a feature for this Wednesday
   const existingFeature = await db
     .select({
-      recipe: recipes_new,
-      featuredAt: features_new.featuredAt,
+      recipe: recipes,
+      featuredAt: features.featuredAt,
     })
-    .from(features_new)
+    .from(features)
     .where(
       and(
-        isNotNull(features_new.featuredAt),
-        gt(features_new.featuredAt, lastWednesday),
-        lte(features_new.featuredAt, nextWednesday.getTime())
+        isNotNull(features.featuredAt),
+        gt(features.featuredAt, lastWednesday),
+        lte(features.featuredAt, nextWednesday.getTime())
       )
     )
-    .innerJoin(recipes_new, eq(recipes_new.id, features_new.recipe))
+    .innerJoin(recipes, eq(recipes.id, features.recipe))
     .get();
 
   if (existingFeature?.recipe) {
@@ -31,11 +31,11 @@ export async function getOrCreateWeeklyFeature() {
   // First try to get a random that has never been featured.
   let unfeaturedRecipe = await db
     .select({
-      recipe: recipes_new,
+      recipe: recipes,
     })
-    .from(recipes_new)
-    .leftJoin(features_new, eq(recipes_new.id, features_new.recipe))
-    .where(isNull(features_new.featuredAt))
+    .from(recipes)
+    .leftJoin(features, eq(recipes.id, features.recipe))
+    .where(isNull(features.featuredAt))
     .orderBy(sql`RANDOM()`)
     .get();
 
@@ -43,18 +43,18 @@ export async function getOrCreateWeeklyFeature() {
     // get a random recipe that has been featured but is stale (older than 6 months)
     unfeaturedRecipe = await db
       .select({
-        recipe: recipes_new,
+        recipe: recipes,
       })
-      .from(recipes_new)
-      .leftJoin(features_new, eq(recipes_new.id, features_new.recipe))
-      .where(lte(features_new.featuredAt, Date.now() - 60 * 60 * 24 * 180))
+      .from(recipes)
+      .leftJoin(features, eq(recipes.id, features.recipe))
+      .where(lte(features.featuredAt, Date.now() - 60 * 60 * 24 * 180))
       .orderBy(sql`RANDOM()`)
       .get();
   }
   if (unfeaturedRecipe) {
     // Create the feature
     const { featuredAt } = await db
-      .insert(features_new)
+      .insert(features)
       .values({
         recipe: unfeaturedRecipe.recipe.id,
         featuredAt: nextWednesday.getTime(),
@@ -94,16 +94,13 @@ export async function getCurrentFeaturedRecipe() {
 
   const data = await db
     .select({
-      recipe: recipes_new,
-      featuredAt: features_new.featuredAt,
+      recipe: recipes,
+      featuredAt: features.featuredAt,
     })
-    .from(features_new)
-    .innerJoin(recipes_new, eq(recipes_new.id, features_new.recipe))
+    .from(features)
+    .innerJoin(recipes, eq(recipes.id, features.recipe))
     .where(
-      and(
-        isNotNull(features_new.featuredAt),
-        gte(features_new.featuredAt, oneWeekAgo)
-      )
+      and(isNotNull(features.featuredAt), gte(features.featuredAt, oneWeekAgo))
     )
     .get();
 
@@ -118,11 +115,11 @@ export async function getCurrentFeaturedRecipe() {
 export async function getRecipe(uuid: string) {
   return await db
     .select({
-      recipe: recipes_new,
-      featuredAt: features_new.featuredAt,
+      recipe: recipes,
+      featuredAt: features.featuredAt,
     })
-    .from(features_new)
-    .innerJoin(recipes_new, eq(recipes_new.id, features_new.recipe))
-    .where(eq(recipes_new.uuid, uuid))
+    .from(features)
+    .innerJoin(recipes, eq(recipes.id, features.recipe))
+    .where(eq(recipes.uuid, uuid))
     .get();
 }

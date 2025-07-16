@@ -11,6 +11,15 @@ TURSO_DATABASE_URL=
 TURSO_AUTH_TOKEN=
 OPENAI_API_KEY=
 GITHUB_TOKEN=
+# ADMIN_TOKEN= // optional - set to anything in local environment to enable admin/* routes
+```
+
+### Database
+
+The database is managed using [Drizzle](https://drizzle ORM). To run migrations, use the following commands:
+
+```bash
+npm run db:migrate
 ```
 
 Then, run the development server:
