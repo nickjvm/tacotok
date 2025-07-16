@@ -11,14 +11,14 @@ type HoursMinutesSeconds = {
 
 export default function Countdown() {
   const getCountdown = (): HoursMinutesSeconds => {
-    const today = new Date();
-    const day = today.getDay();
-    const diff = 2 - day;
+    const nextWednesday = new Date();
+    nextWednesday.setDate(
+      nextWednesday.getDate() + ((3 + 7 - nextWednesday.getDay()) % 7 || 7)
+    );
+    nextWednesday.setHours(0, 0, 0, 0);
 
-    const nextTuesday = new Date(today.setDate(today.getDate() + diff));
-    nextTuesday.setHours(23, 59, 59, 999);
+    const timeDiff = nextWednesday.getTime() - Date.now();
 
-    const timeDiff = nextTuesday.getTime() - today.getTime();
     const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
       (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -45,7 +45,7 @@ export default function Countdown() {
     }
   }, []);
 
-  if (!countdown) {
+  if (!countdown || countdown.days > 0) {
     return null;
   }
 

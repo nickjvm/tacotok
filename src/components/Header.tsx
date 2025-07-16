@@ -48,8 +48,9 @@ export default function Header() {
             <Image
               src="/logo-color.png"
               width={150}
-              height={75}
+              height={36}
               alt="Tacotok"
+              className="h-auto"
             />
           </Link>
         </div>
