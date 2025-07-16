@@ -1,6 +1,9 @@
 export async function getFeaturedRecipeMetadata(recipe?: Recipe) {
   if (!recipe) {
     return {
+      metadataBase: new URL(
+        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+      ),
       title: "Tacotok",
       description:
         "Diversify your Taco Tuesday with a new recipe featured weekly 🌮",
@@ -8,6 +11,9 @@ export async function getFeaturedRecipeMetadata(recipe?: Recipe) {
   }
 
   return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    ),
     title: `${recipe.title} | Tacotok`,
     description: recipe.intro,
     openGraph: {

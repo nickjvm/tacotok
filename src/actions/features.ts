@@ -24,7 +24,6 @@ export async function getOrCreateWeeklyFeature() {
     .get();
 
   if (existingFeature?.recipe) {
-    console.log(existingFeature?.recipe.title);
     return existingFeature;
   }
 

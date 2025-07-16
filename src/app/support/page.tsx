@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useEffect, useState } from "react";
+import { Suspense, useActionState, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createGitHubIssue, GithubIssueResponse } from "@/actions/github";
 import cn from "@/utils/cn";
@@ -14,7 +14,7 @@ type State = {
   };
 } | null;
 
-export default function Page() {
+function View() {
   const searchParams = useSearchParams();
   const isTakedown = searchParams.get("type") === "takedown";
   const [formState, setFormState] = useState<State>(null);
@@ -127,5 +127,13 @@ export default function Page() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <View />
+    </Suspense>
   );
 }

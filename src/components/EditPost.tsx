@@ -40,7 +40,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
         website: formData.get("website") as string,
         author: formData.get("author") as string,
         embedUrl: formData.get("embedUrl") as string,
-        hidden: Boolean(formData.get("hidden")),
+        hidden: Number(formData.get("hidden")),
         imageUrl: formData.get("imageUrl") as string,
       };
 
