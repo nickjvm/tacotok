@@ -20,8 +20,8 @@ export default function Footer() {
   return (
     <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 text-xs">
       <WelcomeModal open={open} setOpen={setOpen} />
-      <div className="grid sm:grid-cols-3 max-w-5xl mx-auto gap-2">
-        <span>
+      <div className="grid grid-cols-2 md:grid-cols-3 max-w-5xl mx-auto gap-2">
+        <span className="text-right md:text-left">
           <Link
             className="hover:underline focus:underline"
             href="https://coff.ee/nickvanmeter"
@@ -29,7 +29,7 @@ export default function Footer() {
             Buy me a 🌮
           </Link>
         </span>
-        <span className="text-center">
+        <span className="text-left md:text-center">
           <button
             className="hover:underline focus:underline"
             onClick={() => setOpen(true)}
@@ -37,7 +37,7 @@ export default function Footer() {
             What is this?
           </button>
         </span>
-        <div className="flex items-center justify-end gap-4">
+        <div className="col-span-2 md:col-span-1 flex items-center justify-center md:justify-end gap-4">
           <Link
             href="/support"
             className="opacity-50 hover:underline focus:underline focus:opacity-100 hover:opacity-100"

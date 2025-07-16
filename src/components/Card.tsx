@@ -24,19 +24,18 @@ export default function Card({ recipe, href, featuredAt }: Props) {
         />
       </div>
       <div>
-        <p className="leading-tight line-clamp-2">{recipe.title}</p>
+        <p className="font-semibold text-lg leading-tight line-clamp-2">
+          {recipe.title}
+        </p>
         {featuredAt && (
-          <p className="text-xs text-gray-500">
+          <p className="text-base">
             {formatDbDate(
               subtractFromDbDate(featuredAt, 1),
               "EEEE, MMMM dd, yyyy"
             )}
           </p>
         )}
-        <p className="text-xs text-gray-500">
-          @{recipe.author} /{" "}
-          {new URL(recipe.embedUrl).hostname.replace(/^www\./, "")}
-        </p>
+        <p className="text-sm text-gray-500">@{recipe.author}</p>
       </div>
     </Link>
   );
