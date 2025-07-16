@@ -20,7 +20,7 @@ export default function Footer() {
   return (
     <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 text-xs">
       <WelcomeModal open={open} setOpen={setOpen} />
-      <div className="grid grid-cols-3 max-w-5xl mx-auto gap-2">
+      <div className="grid sm:grid-cols-3 max-w-5xl mx-auto gap-2">
         <span>
           <Link
             className="hover:underline focus:underline"

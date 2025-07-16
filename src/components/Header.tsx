@@ -13,6 +13,7 @@ export default function Header() {
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuControlRef = useRef<HTMLButtonElement | null>(null);
   const renderRef = useRef<boolean>(false);
+
   useEffect(() => {
     if (!renderRef.current) {
       renderRef.current = true;
@@ -91,12 +92,20 @@ export default function Header() {
             </button>
             <ul>
               <li>
-                <Link href="/" className="py-4 block">
+                <Link
+                  href="/"
+                  className="py-4 block"
+                  onNavigate={() => setMenuOpen(false)}
+                >
                   🌮 Weekly Feature
                 </Link>
               </li>
               <li>
-                <Link href="/archive" className="py-4 block">
+                <Link
+                  href="/archive"
+                  className="py-4 block"
+                  onNavigate={() => setMenuOpen(false)}
+                >
                   🗃️ Archives
                 </Link>
               </li>

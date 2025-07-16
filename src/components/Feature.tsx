@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { FaTiktok } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa";
 import MDEditor from "@uiw/react-md-editor";
-import cn from "@/utils/cn";
+
+import { formatDbDate, subtractFromDbDate } from "@/utils/date";
 
 import EmbeddedPost from "@/components/EmbeddedPost";
 import RecipeSchema from "@/components/RecipeSchema";
-import { formatDbDate, subtractFromDbDate } from "@/utils/date";
+import EmbedModal from "@/components/modals/Embed";
 
 type Props = {
   recipe: Recipe;
@@ -21,24 +24,44 @@ export default function Feature({ recipe, featuredAt }: Props) {
     source = new URL(recipe.website || "");
   }
 
+  const [mobileEmbedOpen, setMobileEmbedOpen] = useState(false);
+
   return (
-    <div className="grid grid-cols-16 max-w-5xl mx-auto gap-6 p-4">
+    <div className="grid grid-cols-16 max-w-5xl mx-auto sm:gap-6 p-4">
       <RecipeSchema recipe={recipe} />
       <div className="col-span-16 lg:col-span-6 lg:order-1 order-2">
-        <div className="lg:sticky top-20 pt-12 lg:pt-0" id="video">
+        <div
+          className="hidden lg:block lg:sticky top-20 pt-12 lg:pt-0"
+          id="video"
+        >
           <EmbeddedPost url={recipe.embedUrl} />
         </div>
       </div>
       <div className="col-span-16 lg:col-span-10 lg:order-2 order-1 ">
-        <Link
-          className={cn(
-            "lg:hidden flex gap-2 item-center justify-center px-4 py-2 border border-black-200 mb-6"
-          )}
-          href="#video"
-        >
-          <FaTiktok className="w-6 h-6" />
-          Watch the video
-        </Link>
+        <div className="lg:hidden aspect-video overflow-hidden relative mb-4 max-w-md mx-auto">
+          <button
+            onClick={() => setMobileEmbedOpen(true)}
+            className="absolute bg-black/50 overflow-hidden w-full h-full top-0 left-0"
+          >
+            <Image
+              src={recipe.imageUrl}
+              alt={recipe.title}
+              fill
+              className="object-cover"
+            />
+            <div className="text-white absolute top-1/2 -translate-y-1/2 left-0 right-0 flex flex-col items-center justify-center">
+              <span className="flex gap-2 items-center justify-center px-4 py-2 border backdrop-blur-xs bg-black/20">
+                <FaPlay className="w-4 h-4" />
+                Watch the video
+              </span>
+            </div>
+          </button>
+          <EmbedModal
+            recipe={recipe}
+            open={mobileEmbedOpen}
+            setOpen={setMobileEmbedOpen}
+          />
+        </div>
         {featuredAt && (
           <p className="text-sm text-gray-500">
             {formatDbDate(

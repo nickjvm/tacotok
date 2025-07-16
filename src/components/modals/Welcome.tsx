@@ -45,7 +45,7 @@ export default function WelcomeModal({ open, setOpen }: Props) {
             </div>
             <p className="mb-4">
               TacoTok is your ultimate destination for the most mouthwatering
-              taco recipes that are taking TikTok by storm! We&apos;e on a
+              taco recipes that are taking TikTok by storm! We&apos;re on a
               mission to bring you the most creative, delicious, and viral taco
               (or taco-inspired) creations.
             </p>
