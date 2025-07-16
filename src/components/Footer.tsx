@@ -9,7 +9,6 @@ export default function Footer() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    console.log("hi");
     if (!window.localStorage?.getItem("hasSeenWelcomeModal")) {
       setOpen(true);
       console.log("here!");

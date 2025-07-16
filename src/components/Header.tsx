@@ -47,11 +47,13 @@ export default function Header() {
         <div className="text-center inline-block sm:m-auto p-3 px-0 sm:p-0">
           <Link href="/">
             <Image
-              src="/logo-color.png"
-              width={150}
-              height={36}
+              priority
+              src="/logo-full-color.png"
+              width="0"
+              height="0"
+              sizes="100vw"
+              className="w-full h-auto max-w-[150px]"
               alt="Tacotok"
-              className="h-auto"
             />
           </Link>
         </div>

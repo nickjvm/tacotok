@@ -34,9 +34,10 @@ export default function WelcomeModal({ open, setOpen }: Props) {
             <div className=" flex flex-col items-center text-center">
               <DialogTitle className="font-bold text-lg">
                 <Image
-                  src="/logo-color.png"
+                  src="/logo-full-color.png"
+                  priority
                   width={150}
-                  height={36}
+                  height={39.45}
                   alt="Tacotok"
                   className="h-auto mx-auto mb-4"
                 />
