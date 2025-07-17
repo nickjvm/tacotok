@@ -39,8 +39,7 @@ button, label, a {
 }
 
 .button {
-  @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors;
-  @apply px-6 py-2 flex gap-2;
+  @apply px-8 py-2 border border-black hover:bg-lime-300 transition-colors cursor-pointer;
 }
 
 .label {
@@ -59,4 +58,8 @@ button, label, a {
 
 .tiktok-embed {
   @apply !mt-0 !min-w-0 !mb-0;
+}
+
+.tiktok-embed>section:before {
+  display: none;
 }

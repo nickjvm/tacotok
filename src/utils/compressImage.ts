@@ -1,3 +1,7 @@
+"use server";
+
+import sharp from "sharp";
+
 export default async function compressImage(url: string) {
   const res = await fetch(url);
   if (!res.ok) {
@@ -6,11 +10,9 @@ export default async function compressImage(url: string) {
   }
 
   const buffer = await res.arrayBuffer();
-  const image = await createImageBitmap(new Blob([buffer]));
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d")!;
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
-  return canvas.toDataURL("image/jpeg", 0.75);
+  const image = await sharp(Buffer.from(buffer))
+    .resize({ width: 500 })
+    .jpeg({ quality: 60, force: false })
+    .toBuffer();
+  return `data:image/jpeg;base64,${image.toString("base64")}`;
 }

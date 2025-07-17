@@ -10,6 +10,7 @@ import {
 import { IoSparkles } from "react-icons/io5";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { createPost, updatePost } from "@/actions/post";
 import { fetchTiktokEmbed } from "@/actions/tiktok";
@@ -43,7 +44,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
         website: formData.get("website") as string,
         author: formData.get("author") as string,
         embedUrl: formData.get("embedUrl") as string,
-        hidden: Number(formData.get("hidden")),
+        hidden: formData.get("hidden") === "on" ? 1 : 0,
         imageUrl: formData.get("imageUrl") as string,
         imageKey: formData.get("imageKey") as string,
       };
@@ -57,6 +58,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
           message: `Recipe ${updatedRecipe.title} updated.`,
           type: "success",
         });
+        router.push(`/archive/${updatedRecipe.uuid}`);
         return updatedRecipe;
       }
 
@@ -65,7 +67,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
         message: `Recipe ${newRecipe.title} created.`,
         type: "success",
       });
-      router.push(`/admin/edit/${newRecipe.uuid}`);
+      router.push(`/archive/${newRecipe.uuid}`);
       return null;
     },
     _recipe
@@ -246,7 +248,28 @@ export default function EditPost({ recipe: _recipe }: Props) {
                   })
                 }
               />
-              <div className="flex justify-end mt-4">
+              <div className="flex justify-end mt-4 items-center space-x-5">
+                <label
+                  htmlFor="hidden"
+                  className="flex items-center gap-2 mr-auto"
+                >
+                  <input
+                    type="checkbox"
+                    name="hidden"
+                    id="hidden"
+                    defaultChecked={!!recipe?.hidden}
+                  />
+                  Hidden
+                </label>
+                {recipe?.uuid && (
+                  <Link
+                    href={`/archive/${recipe.uuid}`}
+                    className="underline hover:no-underline text-gray-700 hover:text-gray-900"
+                    target="_blank"
+                  >
+                    View Recipe
+                  </Link>
+                )}
                 <button className="button" type="submit" disabled={isPending}>
                   {isPending ? "Saving..." : "Save"}
                 </button>

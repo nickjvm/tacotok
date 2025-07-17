@@ -63,7 +63,7 @@ export default function WelcomeModal({ open, setOpen }: Props) {
             <div className="flex gap-4 items-center justify-center">
               <button
                 type="button"
-                className="px-8 py-2 border border-black-200 hover:bg-lime-300 transition-colors cursor-pointer"
+                className="button"
                 onClick={() => setOpen(false)}
               >
                 Let&apos;s Go!

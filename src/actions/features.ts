@@ -99,8 +99,8 @@ export async function getRecipe(uuid: string) {
       recipe: recipes,
       featuredAt: features.featuredAt,
     })
-    .from(features)
-    .innerJoin(recipes, eq(recipes.id, features.recipe))
+    .from(recipes)
+    .leftJoin(features, eq(recipes.id, features.recipe))
     .where(eq(recipes.uuid, uuid))
     .get();
 }

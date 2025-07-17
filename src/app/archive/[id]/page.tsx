@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
   const data = await getRecipe(id);
 
-  if (!data || data.recipe.hidden) {
+  if (!data || (!process.env.ADMIN_TOKEN && data.recipe.hidden)) {
     return notFound();
   }
 

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FaPlay } from "react-icons/fa";
-import MDEditor from "@uiw/react-md-editor";
+import { FaEyeSlash, FaPlay } from "react-icons/fa";
+import Markdown from "react-markdown";
 
 import { formatDbDate, subtractFromDbDate } from "@/utils/date";
 
@@ -14,7 +14,7 @@ import Image from "@/components/Image";
 
 type Props = {
   recipe: Recipe;
-  featuredAt?: number;
+  featuredAt?: number | null;
 };
 
 export default function Feature({ recipe, featuredAt }: Props) {
@@ -72,30 +72,21 @@ export default function Feature({ recipe, featuredAt }: Props) {
           </p>
         )}
         <div className="w-full max-w-full">
-          <h1 className="text-2xl font-bold mb-2">{recipe.title}</h1>
-          <MDEditor.Markdown
-            className="prose"
-            source={recipe.intro}
-            wrapperElement={{
-              "data-color-mode": "light",
-            }}
-          />
-          <h2 className="text-xl font-bold mt-6">Ingredients</h2>
-          <MDEditor.Markdown
-            className="prose"
-            source={recipe.ingredients}
-            wrapperElement={{
-              "data-color-mode": "light",
-            }}
-          />
-          <h2 className="text-xl font-bold mt-6">Instructions</h2>
-          <MDEditor.Markdown
-            className="prose"
-            source={recipe.instructions}
-            wrapperElement={{
-              "data-color-mode": "light",
-            }}
-          />
+          <h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
+            {recipe.hidden && <FaEyeSlash className="w-6 h-6 opacity-50" />}
+            {recipe.title}
+          </h1>
+          <div className="prose">
+            <Markdown>{recipe.intro}</Markdown>
+          </div>
+          <div className="prose">
+            <h2 className="text-xl font-bold mt-6">Ingredients</h2>
+            <Markdown>{recipe.ingredients}</Markdown>
+          </div>
+          <div className="prose">
+            <h2 className="text-xl font-bold mt-6">Instructions</h2>
+            <Markdown>{recipe.instructions}</Markdown>
+          </div>
           {source && (
             <>
               <h2 className="text-xl font-bold mt-6">
