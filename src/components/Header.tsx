@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import cn from "@/utils/cn";
-import Image from "next/image";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
+
+import Image from "@/components/Image";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function Header() {
         <div className="text-center inline-block sm:m-auto p-3 px-0 sm:p-0">
           <Link href="/">
             <Image
+              bypassCdn
               priority
               src="/logo-full-color.png"
               width="0"

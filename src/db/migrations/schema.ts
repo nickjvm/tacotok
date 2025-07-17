@@ -31,4 +31,5 @@ export const recipes = sqliteTable("recipes", {
     .notNull(),
   updatedAt: integer(),
   imageUrl: text("image_url").default("").notNull(),
+  imageKey: text("image_key").default("").notNull(),
 });

@@ -5,7 +5,8 @@ import {
   DialogPanel,
   Transition,
 } from "@headlessui/react";
-import Image from "next/image";
+
+import Image from "@/components/Image";
 
 type Props = {
   open: boolean;
@@ -34,6 +35,7 @@ export default function WelcomeModal({ open, setOpen }: Props) {
             <div className=" flex flex-col items-center text-center">
               <DialogTitle className="font-bold text-lg">
                 <Image
+                  bypassCdn
                   src="/logo-full-color.png"
                   priority
                   width={150}

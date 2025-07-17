@@ -1,3 +1,5 @@
+import asset from "@/utils/asset";
+
 function extractIngredients(ingredients: string) {
   return ingredients
     .split("\n")
@@ -39,7 +41,7 @@ export default function RecipeSchema({ recipe }: { recipe: Recipe }) {
           name: recipe.title,
           video: recipe.embedUrl,
           description: recipe.intro,
-          image: recipe.imageUrl,
+          image: asset(recipe.imageKey),
           recipeCategory: "Dinner",
           recipeCuisine: "Mexican",
           author: {

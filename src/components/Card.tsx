@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { formatDbDate, subtractFromDbDate } from "@/utils/date";
+import Image from "@/components/Image";
 
 type Props = {
   recipe: Recipe;
@@ -18,7 +18,7 @@ export default function Card({ recipe, href, featuredAt }: Props) {
       <div className="aspect-[calc(3/4)] relative mb-2">
         <Image
           fill
-          src={recipe.imageUrl || ""}
+          src={recipe.imageKey}
           alt={recipe.title}
           className="object-cover rounded"
         />

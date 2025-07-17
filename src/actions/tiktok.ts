@@ -23,7 +23,7 @@ export async function cacheThumbnail(thumbUrl: string, embedUrl: string) {
     })
   );
   // Generate a public URL
-  return `${process.env.R2_PUBLIC_URL}/${key}`;
+  return key;
 }
 
 export async function fetchTiktokEmbed(

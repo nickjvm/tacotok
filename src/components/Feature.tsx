@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
 import MDEditor from "@uiw/react-md-editor";
@@ -11,6 +10,7 @@ import { formatDbDate, subtractFromDbDate } from "@/utils/date";
 import EmbeddedPost from "@/components/EmbeddedPost";
 import RecipeSchema from "@/components/RecipeSchema";
 import EmbedModal from "@/components/modals/Embed";
+import Image from "@/components/Image";
 
 type Props = {
   recipe: Recipe;
@@ -44,9 +44,10 @@ export default function Feature({ recipe, featuredAt }: Props) {
             className="absolute bg-black/50 overflow-hidden w-full h-full top-0 left-0"
           >
             <Image
-              src={recipe.imageUrl}
+              src={recipe.imageKey}
               alt={recipe.title}
               fill
+              sizes="(max-width: 448px) 100vw, 448px"
               className="object-cover"
             />
             <div className="text-white absolute top-1/2 -translate-y-1/2 left-0 right-0 flex flex-col items-center justify-center">
