@@ -21,6 +21,7 @@ import cn from "@/utils/cn";
 import TextInput from "@/components/TextInput";
 import Textarea from "@/components/Textarea";
 import EmbeddedPost from "@/components/EmbeddedPost";
+import compressImage from "@/utils/compressImage";
 
 type Props = {
   recipe: Partial<Recipe>;
@@ -99,6 +100,8 @@ export default function EditPost({ recipe: _recipe }: Props) {
       }));
       startTransition(async () => {
         const embed = await fetchTiktokEmbed(embedUrl);
+        embed.thumbnail_url = await compressImage(embed.thumbnail_url);
+
         const parsed = await parseEmbedSource(embed);
         setAutocompletedFields({
           embedUrl: embed.embed_url,
