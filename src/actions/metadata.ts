@@ -1,3 +1,5 @@
+import asset from "@/utils/asset";
+
 export async function getFeaturedRecipeMetadata(recipe?: Recipe) {
   if (!recipe) {
     return {
@@ -19,10 +21,10 @@ export async function getFeaturedRecipeMetadata(recipe?: Recipe) {
     openGraph: {
       title: `Tacotok | ${recipe.title}`,
       description: recipe.intro,
-      images: recipe.imageUrl
+      images: recipe.imageKey
         ? [
             {
-              url: recipe.imageUrl,
+              url: asset(recipe.imageKey),
               width: 576,
               height: 1024,
               alt: recipe.title,

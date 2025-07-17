@@ -14,11 +14,21 @@ export async function cacheThumbnail(thumbUrl: string, embedUrl: string) {
   }
   const buffer = await res.arrayBuffer();
   const key = `thumbnails/${crypto.randomUUID()}.jpg`;
+
+  const image = await createImageBitmap(new Blob([buffer]));
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
+  canvas.width = image.width;
+  canvas.height = image.height;
+  ctx.drawImage(image, 0, 0);
+  const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+  const compressedBuffer = Buffer.from(dataUrl.split(",")[1], "base64");
+
   await r2.send(
     new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,
-      Body: Buffer.from(buffer),
+      Body: Buffer.from(compressedBuffer),
       ContentType: "image/jpeg",
     })
   );

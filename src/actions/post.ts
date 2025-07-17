@@ -6,9 +6,11 @@ import { eq } from "drizzle-orm";
 import { cacheThumbnail } from "@/actions/tiktok";
 
 export async function createPost(
-  data: Omit<Recipe, "id" | "uuid" | "createdAt" | "updatedAt">
+  data: Omit<Recipe, "id" | "uuid" | "createdAt" | "updatedAt"> & {
+    imageUrl: string;
+  }
 ): Promise<Recipe> {
-  const imageUrl = await cacheThumbnail(data.imageUrl, data.embedUrl);
+  const imageKey = await cacheThumbnail(data.imageUrl, data.embedUrl);
 
   return await db
     .insert(recipes)
@@ -19,7 +21,7 @@ export async function createPost(
       website: data.website,
       author: data.author,
       embedUrl: data.embedUrl,
-      imageUrl,
+      imageKey,
       ingredients: data.ingredients,
       instructions: data.instructions,
       hidden: data.hidden,
@@ -29,10 +31,12 @@ export async function createPost(
     .get();
 }
 
-export async function updatePost(data: Recipe): Promise<Recipe> {
-  let imageUrl = data.imageUrl;
-  if (imageUrl.includes("tiktokcdn") || imageUrl.includes("cdninstagram")) {
-    imageUrl = await cacheThumbnail(imageUrl, data.embedUrl);
+export async function updatePost(
+  data: Recipe & { imageUrl?: string }
+): Promise<Recipe> {
+  let imageKey = data.imageKey;
+  if (data.imageUrl) {
+    imageKey = await cacheThumbnail(data.imageUrl, data.embedUrl);
   }
 
   return await db
@@ -43,7 +47,7 @@ export async function updatePost(data: Recipe): Promise<Recipe> {
       website: data.website,
       author: data.author,
       embedUrl: data.embedUrl,
-      imageUrl,
+      imageKey,
       ingredients: data.ingredients,
       instructions: data.instructions,
       hidden: data.hidden,

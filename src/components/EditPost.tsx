@@ -31,7 +31,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
   const { addNotification } = useNotification();
   const [recipe, submitAction, isPending] = useActionState(
     async (
-      state: Partial<Recipe> | null,
+      state: (Partial<Recipe> & { imageUrl?: string }) | null,
       formData: FormData
     ): Promise<Recipe | null> => {
       const data = {
@@ -44,6 +44,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
         embedUrl: formData.get("embedUrl") as string,
         hidden: Number(formData.get("hidden")),
         imageUrl: formData.get("imageUrl") as string,
+        imageKey: formData.get("imageKey") as string,
       };
 
       if (recipe?.uuid) {
@@ -75,7 +76,8 @@ export default function EditPost({ recipe: _recipe }: Props) {
     introduction: recipe?.intro || "",
     author: recipe?.author || "",
     title: recipe?.title || "",
-    imageUrl: recipe?.imageUrl || "",
+    imageKey: recipe?.imageKey || "",
+    imageUrl: "",
     embedUrl: recipe?.embedUrl || "",
   });
 
@@ -112,6 +114,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
           introduction: parsed.introduction || "",
           author: embed.author_unique_id || "",
           imageUrl: embed.thumbnail_url || "",
+          imageKey: "",
         });
       });
     } catch (error) {
@@ -146,6 +149,11 @@ export default function EditPost({ recipe: _recipe }: Props) {
             type="hidden"
             name="imageUrl"
             value={autocompletedFields.imageUrl}
+          />
+          <input
+            type="hidden"
+            name="imageKey"
+            value={autocompletedFields.imageKey}
           />
           <div className="flex items-end gap-2">
             <TextInput
