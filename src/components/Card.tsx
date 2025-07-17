@@ -20,7 +20,7 @@ export default function Card({ recipe, href, featuredAt }: Props) {
       )}
     >
       <div className="aspect-[calc(3/4)] relative mb-2">
-        {recipe.hidden && (
+        {!!recipe.hidden && (
           <FaEyeSlash className="w-16 h-16 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-800/75" />
         )}
         <Image
