@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.tacotok.lol",
+        hostname: "*.tacotok.lol",
       },
       {
         protocol: "https",

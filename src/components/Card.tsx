@@ -20,6 +20,7 @@ export default function Card({ recipe, href, featuredAt }: Props) {
           fill
           src={recipe.imageKey}
           alt={recipe.title}
+          sizes="(max-width: 768px) 100vw, 400px"
           className="object-cover rounded"
         />
       </div>
