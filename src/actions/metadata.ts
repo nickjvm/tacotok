@@ -14,10 +14,10 @@ export async function getFeaturedRecipeMetadata(recipe?: Recipe) {
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
     ),
-    title: `${recipe.title} | Tacotok`,
+    title: `Tacotok | ${recipe.title}`,
     description: recipe.intro,
     openGraph: {
-      title: `${recipe.title} | Tacotok`,
+      title: `Tacotok | ${recipe.title}`,
       description: recipe.intro,
       images: recipe.imageUrl
         ? [

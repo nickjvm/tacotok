@@ -1,24 +1,26 @@
-import Script from "next/script";
-
 function extractIngredients(ingredients: string) {
   return ingredients
     .split("\n")
-    .filter((ingredient) => ingredient.startsWith("-"))
-    .map((ingredient) => ingredient.trim().replace("- ", ""));
+    .filter(
+      (ingredient) => ingredient.startsWith("-") || ingredient.startsWith("*")
+    )
+    .map((ingredient) => ingredient.trim().replace(/^(-|\*)\s*/g, ""));
 }
 
 function extractInstructions(instructions: string) {
-  return {
-    "@type": "HowToSection",
-    name: "Instructions",
-    itemListElement: instructions
-      .split("\n")
-      .filter((instruction) => instruction.match(/^\d+\. /))
-      .map((instruction) => ({
-        "@type": "HowToStep",
-        text: instruction.trim().replace(/^\d+\. /, ""),
-      })),
-  };
+  return [
+    {
+      "@type": "HowToSection",
+      name: "Instructions",
+      itemListElement: instructions
+        .split("\n")
+        .filter((instruction) => instruction.match(/^\d+\. /))
+        .map((instruction) => ({
+          "@type": "HowToStep",
+          text: instruction.trim().replace(/^\d+\. /, ""),
+        })),
+    },
+  ];
 }
 
 export default function RecipeSchema({ recipe }: { recipe: Recipe }) {
@@ -27,7 +29,7 @@ export default function RecipeSchema({ recipe }: { recipe: Recipe }) {
   }
 
   return (
-    <Script
+    <script
       id="schema"
       type="application/ld+json"
       dangerouslySetInnerHTML={{
