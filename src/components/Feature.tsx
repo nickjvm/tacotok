@@ -73,7 +73,7 @@ export default function Feature({ recipe, featuredAt }: Props) {
         )}
         <div className="w-full max-w-full">
           <h1 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            {recipe.hidden && <FaEyeSlash className="w-6 h-6 opacity-50" />}
+            {!!recipe.hidden && <FaEyeSlash className="w-6 h-6 opacity-50" />}
             {recipe.title}
           </h1>
           <div className="prose">
