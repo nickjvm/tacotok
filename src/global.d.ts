@@ -34,6 +34,7 @@ declare global {
     author_unique_id: string;
     embed_product_id: string;
     embed_type: "video";
+    embed_url: string;
   };
 
   type OEmbed_Instagram = {

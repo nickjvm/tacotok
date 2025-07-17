@@ -37,6 +37,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.846.0",
     "@headlessui/react": "^2.2.4",
     "@libsql/client": "^0.15.9",
     "@uiw/react-md-editor": "^4.0.7",

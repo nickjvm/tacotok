@@ -13,6 +13,7 @@ export default async function Page() {
     })
     .from(features)
     .innerJoin(recipes, eq(recipes.id, features.recipe))
+    .where(eq(recipes.hidden, 0))
     .orderBy(desc(features.featuredAt));
 
   return (

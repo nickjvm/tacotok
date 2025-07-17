@@ -12,7 +12,9 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 
 import { createPost, updatePost } from "@/actions/post";
+import { fetchTiktokEmbed } from "@/actions/tiktok";
 import { parseEmbedSource } from "@/actions/parseEmbedSource";
+
 import { useNotification } from "@/providers/Notifications";
 import cn from "@/utils/cn";
 
@@ -89,29 +91,15 @@ export default function EditPost({ recipe: _recipe }: Props) {
       return;
     }
     try {
-      const url = new URL(embedUrl);
-      const finalUrl = `${url.origin}${url.pathname}`;
       setAutocompletedFields((prevState) => ({
         ...prevState,
-        embedUrl: finalUrl,
+        embedUrl,
       }));
       startTransition(async () => {
-        const response = await fetch(
-          `https://www.tiktok.com/oembed?url=${finalUrl}`
-        );
-        const oEmbed = (await response.json()) as OEmbed;
-
-        // setAutocompletedFields({
-        //   ...autocompletedFields,
-        //   embedUrl,
-        //   author: oEmbed.author_unique_id || "",
-        //   imageUrl: oEmbed.thumbnail_url || "",
-        // });
-        // return;
-        const parsed = await parseEmbedSource(oEmbed);
-
+        const embed = await fetchTiktokEmbed(embedUrl);
+        const parsed = await parseEmbedSource(embed);
         setAutocompletedFields({
-          embedUrl: finalUrl,
+          embedUrl: embed.embed_url,
           title: parsed.title || "",
           ingredients: `- ${parsed.ingredients
             ?.map((i) => i?.trim())
@@ -122,8 +110,8 @@ export default function EditPost({ recipe: _recipe }: Props) {
             .filter((i) => !!i)
             .join("\n1. ")}`,
           introduction: parsed.introduction || "",
-          author: parsed.oembed.author_unique_id || "",
-          imageUrl: parsed.oembed.thumbnail_url || "",
+          author: embed.author_unique_id || "",
+          imageUrl: embed.thumbnail_url || "",
         });
       });
     } catch (error) {
@@ -138,7 +126,7 @@ export default function EditPost({ recipe: _recipe }: Props) {
   );
 
   return (
-    <div className="grid grid-cols-16 max-w-5xl mx-auto gap-6 p-4">
+    <div className="grid grid-cols-16 w-full max-w-5xl mx-auto gap-6 p-4">
       {autocompletedFields.embedUrl && (
         <div className="col-span-6">
           <div className="sticky top-20">{preview}</div>

@@ -1,4 +1,4 @@
-import { eq, isNull, sql, lte } from "drizzle-orm";
+import { eq, isNull, sql, lte, and } from "drizzle-orm";
 
 import db from "@/db";
 import { features, recipes } from "@/db/schema";
@@ -26,7 +26,7 @@ export async function getOrCreateWeeklyFeature() {
     })
     .from(recipes)
     .leftJoin(features, eq(recipes.id, features.recipe))
-    .where(isNull(features.featuredAt))
+    .where(and(isNull(features.featuredAt), eq(recipes.hidden, 0)))
     .orderBy(sql`RANDOM()`)
     .get();
 
