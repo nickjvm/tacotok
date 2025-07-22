@@ -1,5 +1,6 @@
 "use client";
 
+import getDenverDate from "@/utils/getDenverDate";
 import { useEffect, useState } from "react";
 
 type HoursMinutesSeconds = {
@@ -11,27 +12,34 @@ type HoursMinutesSeconds = {
 
 export default function Countdown() {
   const getCountdown = (): HoursMinutesSeconds => {
-    const nextWednesday = new Date();
-    nextWednesday.setDate(
-      nextWednesday.getDate() + ((3 + 7 - nextWednesday.getDay()) % 7 || 7)
+    const now = new Date();
+    const denverNow = getDenverDate(now);
+
+    const denverWeekday = denverNow.getUTCDay();
+    const daysUntilNextWednesday = (3 + 7 - denverWeekday) % 7 || 7;
+
+    const nextWednesday = new Date(
+      Date.UTC(
+        denverNow.getUTCFullYear(),
+        denverNow.getUTCMonth(),
+        denverNow.getUTCDate() + daysUntilNextWednesday,
+        0,
+        0,
+        0,
+        0
+      )
     );
-    nextWednesday.setHours(0, 0, 0, 0);
 
-    const timeDiff = nextWednesday.getTime() - Date.now();
+    const diffMs = nextWednesday.getTime() - denverNow.getTime();
 
-    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
-      (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-    return {
-      days,
-      hours,
-      minutes,
-      seconds,
-    };
+    return { days, hours, minutes, seconds };
   };
 
   const [countdown, setCountdown] = useState<HoursMinutesSeconds | null>(null);
@@ -51,9 +59,9 @@ export default function Countdown() {
 
   return (
     <div className="text-center bg-lime-400 p-2 animate-slidedown ">
-      <h1>Taco Tuesday ends in...</h1>
+      <h1>New recipe drop in...</h1>
       <p className="text-xl font-bold">
-        {countdown.hours.toString().padStart(2, "0")}:
+        {countdown.hours.toString()}:
         {countdown.minutes.toString().padStart(2, "0")}:
         {countdown.seconds.toString().padStart(2, "0")}
       </p>

@@ -37,10 +37,7 @@ export default function Card({ recipe, href, featuredAt }: Props) {
         </p>
         {featuredAt && (
           <p className="text-base">
-            {formatDbDate(
-              subtractFromDbDate(featuredAt, 1),
-              "EEEE, MMMM dd, yyyy"
-            )}
+            {formatDbDate(subtractFromDbDate(featuredAt, 7), "MMMM d, yyyy")}
           </p>
         )}
         <p className="text-sm text-gray-500">@{recipe.author}</p>

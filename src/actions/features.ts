@@ -68,8 +68,33 @@ export async function getOrCreateWeeklyFeature() {
   return null;
 }
 
+function isDstActive(timeZone: string) {
+  const now = new Date();
+
+  // Get the UTC offset in minutes for the given time zone
+  const offsetNow = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short",
+  })
+    .formatToParts(now)
+    .find((part) => part.type === "timeZoneName")?.value;
+
+  // Get the offset for January (non-DST)
+  const january = new Date(Date.UTC(now.getFullYear(), 0, 1));
+  const offsetJan = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "short",
+  })
+    .formatToParts(january)
+    .find((part) => part.type === "timeZoneName")?.value;
+
+  // If the current time zone name differs from January's, DST is active
+  return offsetNow !== offsetJan;
+}
+
 function getNextWednesday(): Date {
   const date = new Date();
+  date.setHours(date.getHours() - (isDstActive("America/Denver") ? 7 : 6));
   date.setDate(date.getDate() + ((3 + 7 - date.getDay()) % 7 || 7));
   return date;
 }

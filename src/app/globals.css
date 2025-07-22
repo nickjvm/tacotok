@@ -57,7 +57,7 @@ button, label, a {
 }
 
 .tiktok-embed {
-  @apply !mt-0 !min-w-0 !mb-0;
+  @apply !mt-0 !min-w-0 !mb-0 !h-full;
 }
 
 .tiktok-embed>section:before {

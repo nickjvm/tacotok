@@ -66,8 +66,8 @@ export default function Feature({ recipe, featuredAt }: Props) {
         {featuredAt && (
           <p className="text-sm text-gray-500">
             {formatDbDate(
-              subtractFromDbDate(featuredAt, 1),
-              "EEEE, MMMM dd, yyyy"
+              subtractFromDbDate(featuredAt, 7),
+              "EEEE, MMMM d, yyyy"
             )}
           </p>
         )}
