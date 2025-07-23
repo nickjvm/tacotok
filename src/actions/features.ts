@@ -55,7 +55,7 @@ export async function getOrCreateWeeklyFeature() {
       .insert(features)
       .values({
         recipe: unfeaturedRecipe.recipe.id,
-        featuredAt: yyyymmdd(getNextWednesday()),
+        featuredAt: yyyymmdd(getLastWednesday()),
       })
       .returning()
       .get();
@@ -93,13 +93,15 @@ function isDstActive(timeZone: string) {
   return offsetNow !== offsetJan;
 }
 
-function getNextWednesday(): Date {
+function getLastWednesday(): Date {
   const date = new Date();
   const tzOffset = date.getTimezoneOffset() / 60;
   const mtOffset = isDstActive("America/Denver") ? 6 : 7;
   const offsetDiff = tzOffset - mtOffset;
+  // we always want to work in Mountain Time, regardless of time on server (probably UTC)
   date.setHours(date.getHours() + offsetDiff);
-  date.setDate(date.getDate() + ((3 + 7 - date.getDay()) % 7));
+  // inclusive, returns today if today is a wednesday.
+  date.setDate(date.getDate() - ((date.getDay() + 7 - 3) % 7));
   return date;
 }
 
@@ -112,7 +114,7 @@ export async function getCurrentFeaturedRecipe() {
     })
     .from(features)
     .innerJoin(recipes, eq(recipes.id, features.recipe))
-    .where(eq(features.featuredAt, yyyymmdd(getNextWednesday())))
+    .where(eq(features.featuredAt, yyyymmdd(getLastWednesday())))
     .get();
 }
 
