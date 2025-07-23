@@ -94,8 +94,10 @@ function isDstActive(timeZone: string) {
 
 function getNextWednesday(): Date {
   const date = new Date();
+  const tzOffset = date.getTimezoneOffset() / 60;
+  date.setHours(date.getHours() + tzOffset);
   date.setDate(date.getDate() + ((3 + 7 - date.getDay()) % 7 || 7));
-  date.setHours(date.getHours() - (isDstActive("America/Denver") ? 7 : 6));
+  date.setHours(date.getHours() - (isDstActive("America/Denver") ? 6 : 7));
   return date;
 }
 
