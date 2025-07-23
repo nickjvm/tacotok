@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaEyeSlash, FaPlay } from "react-icons/fa";
 import Markdown from "react-markdown";
 
-import { formatDbDate, subtractFromDbDate } from "@/utils/date";
+import { formatDbDate } from "@/utils/date";
 
 import EmbeddedPost from "@/components/EmbeddedPost";
 import RecipeSchema from "@/components/RecipeSchema";
@@ -65,10 +65,7 @@ export default function Feature({ recipe, featuredAt }: Props) {
         </div>
         {featuredAt && (
           <p className="text-sm text-gray-500">
-            {formatDbDate(
-              subtractFromDbDate(featuredAt, 7),
-              "EEEE, MMMM d, yyyy"
-            )}
+            {formatDbDate(featuredAt, "EEEE, MMMM d, yyyy")}
           </p>
         )}
         <div className="w-full max-w-full">

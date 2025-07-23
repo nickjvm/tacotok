@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { formatDbDate, subtractFromDbDate } from "@/utils/date";
+import { formatDbDate } from "@/utils/date";
 import Image from "@/components/Image";
 import cn from "@/utils/cn";
 import { FaEyeSlash } from "react-icons/fa";
@@ -37,7 +37,7 @@ export default function Card({ recipe, href, featuredAt }: Props) {
         </p>
         {featuredAt && (
           <p className="text-base">
-            {formatDbDate(subtractFromDbDate(featuredAt, 7), "MMMM d, yyyy")}
+            {formatDbDate(featuredAt, "MMMM d, yyyy")}
           </p>
         )}
         <p className="text-sm text-gray-500">@{recipe.author}</p>

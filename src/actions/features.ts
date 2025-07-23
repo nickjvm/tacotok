@@ -11,11 +11,9 @@ const yyyymmdd = (date: Date) => {
 };
 
 export async function getOrCreateWeeklyFeature() {
-  const nextWednesday = getNextWednesday();
-
   const existingFeature = await getCurrentFeaturedRecipe();
 
-  if (existingFeature?.featuredAt) {
+  if (existingFeature) {
     return existingFeature;
   }
 
@@ -39,9 +37,12 @@ export async function getOrCreateWeeklyFeature() {
       .from(recipes)
       .leftJoin(features, eq(recipes.id, features.recipe))
       .where(
-        lte(
-          features.featuredAt,
-          yyyymmdd(new Date(Date.now() - 60 * 60 * 24 * 180))
+        and(
+          eq(recipes.hidden, 0),
+          lte(
+            features.featuredAt,
+            yyyymmdd(new Date(Date.now() - 60 * 60 * 24 * 180))
+          )
         )
       )
       .orderBy(sql`RANDOM()`)
@@ -54,7 +55,7 @@ export async function getOrCreateWeeklyFeature() {
       .insert(features)
       .values({
         recipe: unfeaturedRecipe.recipe.id,
-        featuredAt: yyyymmdd(nextWednesday),
+        featuredAt: yyyymmdd(getNextWednesday()),
       })
       .returning()
       .get();
@@ -95,15 +96,16 @@ function isDstActive(timeZone: string) {
 function getNextWednesday(): Date {
   const date = new Date();
   const tzOffset = date.getTimezoneOffset() / 60;
-  date.setHours(date.getHours() + tzOffset);
-  date.setDate(date.getDate() + ((3 + 7 - date.getDay()) % 7 || 7));
-  date.setHours(date.getHours() - (isDstActive("America/Denver") ? 6 : 7));
+  const mtOffset = isDstActive("America/Denver") ? 6 : 7;
+  const offsetDiff = tzOffset - mtOffset;
+  date.setHours(date.getHours() + offsetDiff);
+  date.setDate(date.getDate() + ((3 + 7 - date.getDay()) % 7));
   return date;
 }
 
 // Helper function to get the current featured recipe
 export async function getCurrentFeaturedRecipe() {
-  const data = await db
+  return await db
     .select({
       recipe: recipes,
       featuredAt: features.featuredAt,
@@ -112,12 +114,6 @@ export async function getCurrentFeaturedRecipe() {
     .innerJoin(recipes, eq(recipes.id, features.recipe))
     .where(eq(features.featuredAt, yyyymmdd(getNextWednesday())))
     .get();
-
-  if (!data) {
-    return null;
-  }
-
-  return data;
 }
 
 export async function getRecipe(uuid: string) {
