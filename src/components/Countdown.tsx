@@ -16,13 +16,13 @@ export default function Countdown() {
     const denverNow = getDenverDate(now);
 
     const denverWeekday = denverNow.getUTCDay();
-    const daysUntilNextWednesday = (3 + 7 - denverWeekday) % 7 || 7;
+    const daysUntilNextTuesday = (2 + 7 - denverWeekday) % 7 || 7;
 
-    const nextWednesday = new Date(
+    const nextTuesday = new Date(
       Date.UTC(
         denverNow.getUTCFullYear(),
         denverNow.getUTCMonth(),
-        denverNow.getUTCDate() + daysUntilNextWednesday,
+        denverNow.getUTCDate() + daysUntilNextTuesday,
         0,
         0,
         0,
@@ -30,7 +30,7 @@ export default function Countdown() {
       )
     );
 
-    const diffMs = nextWednesday.getTime() - denverNow.getTime();
+    const diffMs = nextTuesday.getTime() - denverNow.getTime();
 
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const hours = Math.floor(

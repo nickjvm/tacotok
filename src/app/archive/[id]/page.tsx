@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getFeaturedRecipeMetadata } from "@/actions/metadata";
 import Feature from "@/components/Feature";
 import { getRecipe } from "@/actions/features";
+import { yyyymmdd } from "@/utils/date";
 
 export async function generateMetadata({
   params,
@@ -20,7 +21,12 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
   const data = await getRecipe(id);
 
-  if (!data || (!process.env.ADMIN_TOKEN && data.recipe.hidden)) {
+  if (
+    !data ||
+    !data.featuredAt ||
+    data.featuredAt > yyyymmdd(new Date()) ||
+    (!process.env.ADMIN_TOKEN && data.recipe.hidden)
+  ) {
     return notFound();
   }
 

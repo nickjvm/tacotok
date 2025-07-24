@@ -55,7 +55,66 @@ export async function getOrCreateWeeklyFeature() {
       .insert(features)
       .values({
         recipe: unfeaturedRecipe.recipe.id,
-        featuredAt: yyyymmdd(getLastWednesday()),
+        featuredAt: yyyymmdd(getLastTuesday()),
+      })
+      .returning()
+      .get();
+
+    return {
+      recipe: unfeaturedRecipe.recipe,
+      featuredAt,
+    };
+  }
+
+  return null;
+}
+
+export async function getOrCreateNextWeeklyFeature() {
+  const nextFeature = await getNextFeaturedRecipe();
+
+  if (nextFeature) {
+    return nextFeature;
+  }
+
+  // First try to get a random that has never been featured.
+  let unfeaturedRecipe = await db
+    .select({
+      recipe: recipes,
+    })
+    .from(recipes)
+    .leftJoin(features, eq(recipes.id, features.recipe))
+    .where(and(isNull(features.featuredAt), eq(recipes.hidden, 0)))
+    .orderBy(sql`RANDOM()`)
+    .get();
+
+  if (!unfeaturedRecipe) {
+    // get a random recipe that has been featured but is stale (older than 6 months)
+    unfeaturedRecipe = await db
+      .select({
+        recipe: recipes,
+      })
+      .from(recipes)
+      .leftJoin(features, eq(recipes.id, features.recipe))
+      .where(
+        and(
+          eq(recipes.hidden, 0),
+          lte(
+            features.featuredAt,
+            yyyymmdd(new Date(Date.now() - 60 * 60 * 24 * 180))
+          )
+        )
+      )
+      .orderBy(sql`RANDOM()`)
+      .get();
+  }
+
+  if (unfeaturedRecipe) {
+    // Create the feature
+    const { featuredAt } = await db
+      .insert(features)
+      .values({
+        recipe: unfeaturedRecipe.recipe.id,
+        featuredAt: yyyymmdd(getNextTuesday()),
       })
       .returning()
       .get();
@@ -93,15 +152,27 @@ function isDstActive(timeZone: string) {
   return offsetNow !== offsetJan;
 }
 
-function getLastWednesday(): Date {
+function getLastTuesday(): Date {
   const date = new Date();
   const tzOffset = date.getTimezoneOffset() / 60;
   const mtOffset = isDstActive("America/Denver") ? 6 : 7;
   const offsetDiff = tzOffset - mtOffset;
   // we always want to work in Mountain Time, regardless of time on server (probably UTC)
   date.setHours(date.getHours() + offsetDiff);
-  // inclusive, returns today if today is a wednesday.
-  date.setDate(date.getDate() - ((date.getDay() + 7 - 3) % 7));
+  // inclusive, returns today if today is a tuesday.
+  date.setDate(date.getDate() - ((date.getDay() + 7 - 2) % 7));
+  return date;
+}
+
+function getNextTuesday(): Date {
+  const date = new Date();
+  const tzOffset = date.getTimezoneOffset() / 60;
+  const mtOffset = isDstActive("America/Denver") ? 6 : 7;
+  const offsetDiff = tzOffset - mtOffset;
+  // we always want to work in Mountain Time, regardless of time on server (probably UTC)
+  date.setHours(date.getHours() + offsetDiff);
+  // exclusive, returns next tuesday if today is a tuesday.
+  date.setDate(date.getDate() + ((2 + 7 - date.getDay()) % 7 || 7));
   return date;
 }
 
@@ -114,7 +185,19 @@ export async function getCurrentFeaturedRecipe() {
     })
     .from(features)
     .innerJoin(recipes, eq(recipes.id, features.recipe))
-    .where(eq(features.featuredAt, yyyymmdd(getLastWednesday())))
+    .where(eq(features.featuredAt, yyyymmdd(getLastTuesday())))
+    .get();
+}
+
+export async function getNextFeaturedRecipe() {
+  return await db
+    .select({
+      recipe: recipes,
+      featuredAt: features.featuredAt,
+    })
+    .from(features)
+    .innerJoin(recipes, eq(recipes.id, features.recipe))
+    .where(eq(features.featuredAt, yyyymmdd(getNextTuesday())))
     .get();
 }
 
