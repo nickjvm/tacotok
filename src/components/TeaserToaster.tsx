@@ -61,7 +61,7 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
 
       const countdown = getCountdown();
 
-      if (countdown.days > 3) {
+      if (countdown.days > 0) {
         setCountdown(countdown);
         return;
       }
@@ -80,7 +80,7 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
     setClosed(true);
   };
 
-  if (!countdown || !recipe || closed) {
+  if (!countdown || countdown.days >= 4 || !recipe || closed) {
     return null;
   }
 
@@ -89,7 +89,7 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
       <div className="flex items-center justify-between bg-lime-300 px-4 py-2 text-center font-bold text-sm">
         🌮 Taco Tuesday is in{" "}
         {countdown.days > 0 &&
-          `${countdown.days} ${plural("day", countdown.days)}!`}
+          `${countdown.days + 1} ${plural("day", countdown.days + 1)}!`}
         {countdown.days <= 0 &&
           `${countdown.hours} ${plural("hr", countdown.hours)}, ${
             countdown.minutes
