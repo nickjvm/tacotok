@@ -1,7 +1,9 @@
 "use client";
 
 import getDenverDate from "@/utils/getDenverDate";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { GoArrowRight } from "react-icons/go";
 
 type HoursMinutesSeconds = {
   days: number;
@@ -58,13 +60,21 @@ export default function Countdown() {
   }
 
   return (
-    <div className="text-center bg-lime-400 p-2 animate-slidedown ">
-      <h1>New recipe drop in...</h1>
-      <p className="text-xl font-bold">
-        {countdown.hours.toString()}:
-        {countdown.minutes.toString().padStart(2, "0")}:
-        {countdown.seconds.toString().padStart(2, "0")}
-      </p>
+    <div className="text-center bg-lime-400 p-2 animate-slidedown flex flex-col items-center justify-center ">
+      <div className="flex gap-2">
+        <h1>New recipe drop in </h1>
+        <p className="font-bold">
+          {countdown.hours.toString()}:
+          {countdown.minutes.toString().padStart(2, "0")}:
+          {countdown.seconds.toString().padStart(2, "0")}
+        </p>
+      </div>
+      <Link
+        href="/preview"
+        className="z-0 relative inline-flex items-center gap-2 mt-1 text-sm underline hover:no-underline before:content-[''] before:absolute before:-top-0.5 before:-left-1 before:-bottom-0.5 before:right-full opacity-100 hover:before:-right-0.5 hover:before:bg-white hover:before:z-[-1] before:transition-all opacity-100;"
+      >
+        Get a sneak peek <GoArrowRight />
+      </Link>
     </div>
   );
 }
