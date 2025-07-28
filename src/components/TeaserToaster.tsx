@@ -57,19 +57,14 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
     }
 
     if (typeof window !== "undefined") {
-      setClosed(document.cookie.includes("teaserClosed"));
+      const closed = document.cookie.includes("teaserClosed");
+      setClosed(closed);
 
-      const countdown = getCountdown();
-
-      if (countdown.days > 0) {
-        setCountdown(countdown);
+      if (closed) {
         return;
       }
 
-      const interval = setInterval(() => {
-        setCountdown(getCountdown());
-      }, 1000);
-      return () => clearInterval(interval);
+      setCountdown(getCountdown());
     }
   }, [getCountdown, recipe]);
 
@@ -80,7 +75,13 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
     setClosed(true);
   };
 
-  if (!countdown || countdown.days >= 4 || !recipe || closed) {
+  if (
+    closed ||
+    !recipe ||
+    !countdown ||
+    countdown.days >= 4 ||
+    countdown.days < 1
+  ) {
     return null;
   }
 
@@ -88,15 +89,7 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
     <div className="fixed bottom-2 left-2 right-2 z-50 sm:left-auto shadow sm:max-w-sm bg-white ">
       <div className="flex items-center justify-between bg-lime-300 px-4 py-2 text-center font-bold text-sm">
         🌮 Taco Tuesday is in{" "}
-        {countdown.days > 0 &&
-          `${countdown.days + 1} ${plural("day", countdown.days + 1)}!`}
-        {countdown.days <= 0 &&
-          `${countdown.hours} ${plural("hr", countdown.hours)}, ${
-            countdown.minutes
-          } ${plural("min", countdown.minutes)}, ${countdown.seconds} ${plural(
-            "sec",
-            countdown.seconds
-          )}`}
+        {`${countdown.days + 1} ${plural("day", countdown.days + 1)}!`}
         <button
           className="ml-auto opacity-30 hover:opacity-100 transition"
           onClick={onClose}
