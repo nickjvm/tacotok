@@ -19,8 +19,6 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
   const [closed, setClosed] = useState(true);
   const [countdown, setCountdown] = useState<HoursMinutesSeconds | null>(null);
 
-  useEffect(() => {}, []);
-
   const getCountdown = useCallback(() => {
     const now = new Date();
     const denverNow = getDenverDate(now);
@@ -103,9 +101,10 @@ export default function TeaserToaster({ recipe }: { recipe?: Recipe | null }) {
           <div className="aspect-square relative col-span-1">
             <Image
               src={asset(recipe.imageKey)}
+              sizes="(max-width: 768px) 68px, 68px"
               alt={recipe.title}
               fill
-              className="rounded"
+              className="rounded object-cover"
             />
           </div>
           <div className="col-span-3 flex flex-col">

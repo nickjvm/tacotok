@@ -1,4 +1,4 @@
-export const revalidate = 900;
+import { unstable_cache as cache } from "next/cache";
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -19,9 +19,22 @@ export async function generateMetadata(): Promise<Metadata> {
   return await getFeaturedRecipeMetadata(data?.recipe);
 }
 
+const getData = cache(
+  async () => {
+    const data = await getOrCreateWeeklyFeature();
+    const nextFeature = await getOrCreateNextWeeklyFeature();
+    return { data, nextFeature };
+  },
+  ["weekly-feature"],
+  {
+    revalidate: 60 * 60, // Revalidate every hour
+    tags: ["weekly-feature"],
+  }
+);
+
 export default async function Home() {
-  const data = await getOrCreateWeeklyFeature();
-  const nextFeature = await getOrCreateNextWeeklyFeature();
+  const { data, nextFeature } = await getData();
+
   if (!data) {
     return notFound();
   }

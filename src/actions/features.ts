@@ -1,4 +1,5 @@
 import { eq, isNull, sql, lte, and } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 
 import db from "@/db";
 import { features, recipes } from "@/db/schema";
@@ -60,6 +61,9 @@ export async function getOrCreateWeeklyFeature() {
       .returning()
       .get();
 
+    // Revalidate the cache when a new feature is created
+    revalidateTag("weekly-feature");
+
     return {
       recipe: unfeaturedRecipe.recipe,
       featuredAt,
@@ -118,6 +122,9 @@ export async function getOrCreateNextWeeklyFeature() {
       })
       .returning()
       .get();
+
+    // Revalidate the cache when a new feature is created
+    revalidateTag("weekly-feature");
 
     return {
       recipe: unfeaturedRecipe.recipe,
